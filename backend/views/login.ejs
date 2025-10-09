@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+        }
+
+        body{
+            background-color: #333;
+        }
+
+        #main-container{
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        section{
+            width: 30vw;
+            /* border: 1px solid #000; */
+            padding: 30px;
+            box-shadow: 0 0 20px #000;
+            background-color: #444;
+            color: #eee;
+        }
+
+        h1{
+            font-size: 30px;
+        }
+
+        form{
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+        }
+
+        input, h1{
+            margin-bottom: 30px;
+        }
+
+        input{
+            border: none;
+            outline: none;
+            padding: 7.5px;
+            border-radius: 5px;
+            font-size: 17px;
+            background-image: linear-gradient(to top, #282828, #343434);
+            color: #ddd;
+        }
+
+        button{
+            padding: 10px;
+            background-color: #000;
+            color: #fff;
+            font-size: 17px;
+        }
+
+        label{
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="main-container">
+        <% if(isLoggedIn) { %>
+            <section id="logout">
+                <form>
+                    <button type="submit" id="logout-button">Logout</button>
+                </form>
+            </section>
+        <% } else { %>
+            <section id="login">
+                <h1>Login</h1>
+                <form>
+                    <label for="user-name">Username:</label>
+                    <input type="text" id="user-name" required>
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" required>
+                    <button type="submit" id="login-button">Login</button>
+                </form>
+            </section>
+        <% } %>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", ()=>{
+            const usernameInput = document.getElementById('user-name');
+            const passwordInput = document.getElementById('password');
+            const loginButton = document.getElementById('login-button');
+            const logoutButton = document.getElementById('logout-button');
+
+            loginButton?.addEventListener("click", (e)=>{
+                e.preventDefault();
+                let loginUsername = usernameInput.value;
+                let loginPassword = passwordInput.value;
+                fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ userName: loginUsername, password: loginPassword })
+                })
+                .then(async response => {
+                    const res = await response.json()
+
+                    if(response.ok){
+                        window.location.href = '/home';
+                    } else{
+                        alert(res.message)
+                    }
+                })
+            })
+
+            logoutButton?.addEventListener("click", (e)=>{
+                e.preventDefault();
+                fetch('/logout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(async response => {
+                    if(response.ok){
+                        window.location.reload();
+                    } else{
+                        const message = await response.json();
+                        alert(message)
+                    }
+                })
+            })
+        })
+    </script>
+</body>
+</html>

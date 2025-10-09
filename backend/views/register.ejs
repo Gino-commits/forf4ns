@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+        }
+
+        body{
+            background-color: #333;
+        }
+
+        #main-container{
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        section{
+            width: 30vw;
+            /* border: 1px solid #000; */
+            padding: 30px;
+            box-shadow: 0 0 20px #000;
+            background-color: #444;
+            color: #eee;
+        }
+
+        h1{
+            font-size: 30px;
+        }
+
+        form{
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+        }
+
+        input, h1{
+            margin-bottom: 30px;
+        }
+
+        input{
+            border: none;
+            outline: none;
+            padding: 7.5px;
+            border-radius: 5px;
+            font-size: 17px;
+            background-image: linear-gradient(to top, #282828, #343434);
+            color: #ddd;
+        }
+
+        button{
+            padding: 10px;
+            background-color: #000;
+            color: #fff;
+            font-size: 17px;
+        }
+
+        label{
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="main-container">
+        <section id="login">
+            <h1>Login</h1>
+            <form>
+                <label for="user-name">Username:</label>
+                <input type="text" id="user-name" required>
+                <label for="password">Password:</label>
+                <input type="password" id="password" required>
+                <label for="password-confirmation">Confirm your password:</label>
+                <input type="password" id="password-confirmation" required>
+                <button type="submit" id="login-button">Login</button>
+            </form>
+        </section>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", ()=>{
+            const usernameInput = document.getElementById('user-name');
+            const passwordInput = document.getElementById('password');
+            const passwordConfirmationInput = document.getElementById('password-confirmation');
+            const loginButton = document.getElementById('login-button');
+
+            loginButton.addEventListener("click", (e)=>{
+                e.preventDefault();
+                let username = usernameInput.value;
+                let password = passwordInput.value;
+                let passwordConfirmation = passwordConfirmationInput.value;
+
+                if(password == passwordConfirmation){
+                    fetch('/register', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ userName: username, password: password })
+                    })
+                    .then(response => response.json())
+                    .then(res => {
+                        alert(res.message)
+                        if(res.ok){
+                            //todo
+                        } else{
+                            
+                        }
+                    })
+                }else{
+                    alert("Your password and confirmation password must be the same")
+                }
+            })
+        })
+    </script>
+</body>
+</html>
